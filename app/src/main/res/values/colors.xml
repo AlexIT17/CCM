@@ -1,0 +1,13 @@
+<resources>
+    <color name="gray_light">#D9D9D9</color>
+    <color name="green_light">#B5F27A</color>
+    <color name="orange">#FF9800</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="sber">#21A038</color>
+    <color name="vtb">#0A2896</color>
+    <color name="tbank">#FFDD2D</color>
+    <color name="alfa">#EF3124</color>
+    <color name="gazprom">#0055A5</color>
+</resources>
