@@ -1,5 +1,7 @@
 package com.example.ccm;
 
+import androidx.annotation.ColorInt;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
@@ -26,7 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return false;
     }
 
-    protected void setFramedContent(@LayoutRes int layout, @ColorRes int bandColor) {
+    protected void setFramedContent(@LayoutRes int layout, @ColorInt int color) {
         setContentView(R.layout.activity_frame);
 
         // Чёрный статус-бар со светлыми значками
@@ -42,7 +44,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             return insets;
         });
 
-        int color = ContextCompat.getColor(this, bandColor);
         findViewById(R.id.bandLeft).setBackgroundColor(color);
         findViewById(R.id.bandRight).setBackgroundColor(color);
         getLayoutInflater().inflate(layout, (FrameLayout) findViewById(R.id.content), true);

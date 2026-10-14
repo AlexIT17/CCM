@@ -9,7 +9,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setFramedContent(R.layout.content_main, R.color.gray_light);
+        setFramedContent(R.layout.content_main,
+                androidx.core.content.ContextCompat.getColor(this, R.color.gray_light));
 
         Button btnCredit = findViewById(R.id.btnCredit);
         Button btnDeposit = findViewById(R.id.btnDeposit);
