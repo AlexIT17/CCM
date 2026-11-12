@@ -13,12 +13,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String NAME = "kvi.db";
 
-    /**
-     * Версия базы.
-     * Поднимайте на 1 каждый раз, когда правите seed.sql
-     * или схему — тогда при запуске база пересоздастся.
-     */
-    private static final int VERSION = 3;
+    private static final int VERSION = 21;
 
     private static DatabaseHelper instance;
     private final Context context;
@@ -34,6 +29,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
+    }
+
+    @Override
     public void onCreate(SQLiteDatabase db) {
         createSchema(db);
         loadSeedFromAssets(db);
@@ -41,6 +42,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS mortgage_adjustments");
+        db.execSQL("DROP TABLE IF EXISTS family_mortgage_rules");
+        db.execSQL("DROP TABLE IF EXISTS mortgage_program_rules");
+        db.execSQL("DROP TABLE IF EXISTS vtb_deposit_rate_rules");
+        db.execSQL("DROP TABLE IF EXISTS vtb_deposit_settings");
+        db.execSQL("DROP TABLE IF EXISTS deposit_rate_rules");
         db.execSQL("DROP TABLE IF EXISTS rate_rules");
         db.execSQL("DROP TABLE IF EXISTS source_info");
         db.execSQL("DROP TABLE IF EXISTS products");
@@ -48,7 +55,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // ---------- схема ----------
 
     private void createSchema(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE banks (" +
@@ -73,6 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "product_id INTEGER NOT NULL," +
                 "rate REAL NOT NULL," +
+                "client_segment TEXT NOT NULL DEFAULT 'ALL'," +
                 "min_amount REAL NOT NULL," +
                 "max_amount REAL NOT NULL," +
                 "min_term_months INTEGER NOT NULL," +
@@ -80,26 +87,112 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "source_id INTEGER NOT NULL," +
                 "FOREIGN KEY (product_id) REFERENCES products(id)," +
                 "FOREIGN KEY (source_id)  REFERENCES source_info(id))");
+
+        db.execSQL("CREATE TABLE deposit_rate_rules (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "product_id INTEGER NOT NULL," +
+                "min_amount REAL NOT NULL," +
+                "max_amount REAL NOT NULL," +
+                "min_term_months INTEGER NOT NULL," +
+                "max_term_months INTEGER NOT NULL," +
+                "top_up INTEGER NOT NULL DEFAULT 0," +
+                "rate REAL NOT NULL," +
+                "source_id INTEGER NOT NULL," +
+                "FOREIGN KEY (product_id) REFERENCES products(id)," +
+                "FOREIGN KEY (source_id) REFERENCES source_info(id))");
+
+        db.execSQL("CREATE TABLE vtb_deposit_settings (" +
+                "product_id INTEGER PRIMARY KEY," +
+                "min_online_amount REAL NOT NULL," +
+                "min_office_amount REAL NOT NULL," +
+                "min_interest_balance REAL NOT NULL," +
+                "min_term_months INTEGER NOT NULL," +
+                "max_term_months INTEGER NOT NULL," +
+                "max_ui_amount REAL NOT NULL," +
+                "max_vklad_rate REAL NOT NULL," +
+                "max_account_rate REAL NOT NULL," +
+                "source_id INTEGER NOT NULL," +
+                "account_source_id INTEGER NOT NULL," +
+                "FOREIGN KEY (product_id) REFERENCES products(id)," +
+                "FOREIGN KEY (source_id) REFERENCES source_info(id)," +
+                "FOREIGN KEY (account_source_id) REFERENCES source_info(id))");
+
+        db.execSQL("CREATE TABLE vtb_deposit_rate_rules (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "product_id INTEGER NOT NULL," +
+                "term_months INTEGER NOT NULL," +
+                "min_amount REAL NOT NULL," +
+                "max_amount REAL NOT NULL," +
+                "base_rate REAL NOT NULL," +
+                "source_id INTEGER NOT NULL," +
+                "FOREIGN KEY (product_id) REFERENCES products(id)," +
+                "FOREIGN KEY (source_id) REFERENCES source_info(id))");
+
+        db.execSQL("CREATE TABLE mortgage_program_rules (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "product_id INTEGER NOT NULL," +
+                "program_code TEXT NOT NULL," +
+                "region_group TEXT NOT NULL," +
+                "base_rate REAL NOT NULL," +
+                "min_rate REAL NOT NULL," +
+                "max_loan REAL NOT NULL," +
+                "min_down_payment_pct REAL NOT NULL," +
+                "min_property_price REAL NOT NULL," +
+                "min_term_months INTEGER NOT NULL," +
+                "max_term_months INTEGER NOT NULL," +
+                "source_id INTEGER NOT NULL," +
+                "FOREIGN KEY (product_id) REFERENCES products(id)," +
+                "FOREIGN KEY (source_id) REFERENCES source_info(id))");
+
+        db.execSQL("CREATE TABLE family_mortgage_rules (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "product_id INTEGER NOT NULL," +
+                "region_group TEXT NOT NULL," +
+                "min_children INTEGER NOT NULL," +
+                "max_children INTEGER NOT NULL," +
+                "rate REAL NOT NULL," +
+                "max_loan REAL NOT NULL," +
+                "min_down_payment_pct REAL NOT NULL," +
+                "min_property_price REAL NOT NULL," +
+                "min_term_months INTEGER NOT NULL," +
+                "max_term_months INTEGER NOT NULL," +
+                "source_id INTEGER NOT NULL," +
+                "FOREIGN KEY (product_id) REFERENCES products(id)," +
+                "FOREIGN KEY (source_id) REFERENCES source_info(id))");
+
+        db.execSQL("CREATE TABLE mortgage_adjustments (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "product_id INTEGER NOT NULL," +
+                "program_code TEXT NOT NULL," +
+                "adjustment_code TEXT NOT NULL," +
+                "rate_delta REAL NOT NULL," +
+                "source_id INTEGER NOT NULL," +
+                "FOREIGN KEY (product_id) REFERENCES products(id)," +
+                "FOREIGN KEY (source_id) REFERENCES source_info(id))");
+
+        db.execSQL("CREATE INDEX idx_products_bank_type ON products(bank_id, type)");
+        db.execSQL("CREATE INDEX idx_rate_rules_product_segment ON rate_rules(product_id, client_segment)");
+        db.execSQL("CREATE INDEX idx_deposit_rules_lookup ON deposit_rate_rules(product_id, top_up, min_term_months, max_term_months)");
+        db.execSQL("CREATE INDEX idx_vtb_deposit_rules_lookup ON vtb_deposit_rate_rules(product_id, term_months, min_amount, max_amount)");
+        db.execSQL("CREATE INDEX idx_mortgage_rules_lookup ON mortgage_program_rules(product_id, program_code, region_group)");
+        db.execSQL("CREATE INDEX idx_family_mortgage_lookup ON family_mortgage_rules(product_id, region_group, min_children, max_children)");
+        db.execSQL("CREATE INDEX idx_mortgage_adjustments_lookup ON mortgage_adjustments(product_id, program_code, adjustment_code)");
     }
 
-    // ---------- данные из assets/seed.sql ----------
 
     private void loadSeedFromAssets(SQLiteDatabase db) {
         StringBuilder sql = new StringBuilder();
         try (InputStream is = context.getAssets().open("seed.sql");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is, java.nio.charset.StandardCharsets.UTF_8))) {
 
             String line;
             while ((line = reader.readLine()) != null) {
                 String trimmed = line.trim();
 
-                // Пустые строки и комментарии пропускаем
                 if (trimmed.isEmpty() || trimmed.startsWith("--")) continue;
 
                 sql.append(line).append('\n');
 
-                // Конец инструкции — точка с запятой в конце строки.
-                // Считаем так: последний непробельный символ == ';'
                 if (trimmed.endsWith(";")) {
                     String statement = sql.toString().trim();
                     if (!statement.isEmpty()) {
@@ -109,7 +202,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
             }
 
-            // Защита от забытой точки с запятой в конце файла
             if (sql.toString().trim().length() > 0) {
                 db.execSQL(sql.toString().trim());
             }

@@ -10,7 +10,23 @@ public final class MortgageCalculator {
     public static CreditResult calculateWithDownPayment(
             double propertyPrice, double downPayment,
             double annualRatePct, int months) {
-        double principal = Math.max(0, propertyPrice - downPayment);
+        CalculationInput.validate(propertyPrice, annualRatePct, months);
+        CalculationInput.finite(downPayment);
+        if (downPayment < 0 || downPayment > propertyPrice) {
+            throw new IllegalArgumentException("Взнос должен быть от нуля до стоимости объекта");
+        }
+        double principal = propertyPrice - downPayment;
         return CreditCalculator.calculate(principal, annualRatePct, months);
+    }
+
+    public static CreditResult calculateCombined(double principal, double subsidizedLimit,
+            double subsidizedRate, double marketRate, int months) {
+        CalculationInput.validate(principal, subsidizedRate, months);
+        CalculationInput.validate(subsidizedLimit, marketRate, months);
+        double first = Math.min(principal, subsidizedLimit);
+        CreditResult a = calculate(first, subsidizedRate, months);
+        CreditResult b = calculate(principal - first, marketRate, months);
+        return new CreditResult(a.monthlyPayment + b.monthlyPayment,
+                a.totalPayment + b.totalPayment, a.overpayment + b.overpayment);
     }
 }

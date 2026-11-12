@@ -15,8 +15,8 @@
 
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/btn_circle"
             android:contentDescription="Назад"
             android:padding="10dp"
@@ -30,8 +30,8 @@
 
         <ImageButton
             android:id="@+id/btnForward"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/btn_circle"
             android:contentDescription="Вперёд"
             android:padding="10dp"
@@ -46,7 +46,7 @@
         android:orientation="horizontal">
 
         <View android:id="@+id/bandLeft"
-            android:layout_width="48dp" android:layout_height="match_parent"
+            android:layout_width="12dp" android:layout_height="match_parent"
             android:background="@color/gray_light"/>
         <View android:layout_width="3dp" android:layout_height="match_parent"
             android:background="@color/black"/>
@@ -58,7 +58,7 @@
         <View android:layout_width="3dp" android:layout_height="match_parent"
             android:background="@color/black"/>
         <View android:id="@+id/bandRight"
-            android:layout_width="48dp" android:layout_height="match_parent"
+            android:layout_width="12dp" android:layout_height="match_parent"
             android:background="@color/gray_light"/>
     </LinearLayout>
 </LinearLayout>

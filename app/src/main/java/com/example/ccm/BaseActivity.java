@@ -23,7 +23,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ImageButton btnBack;
     private ImageButton btnForward;
 
-    // Главный экран переопределяет: с него назад идти некуда
     protected boolean isRoot() {
         return false;
     }
@@ -31,16 +30,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void setFramedContent(@LayoutRes int layout, @ColorInt int color) {
         setContentView(R.layout.activity_frame);
 
-        // Чёрный статус-бар со светлыми значками
         getWindow().setStatusBarColor(Color.BLACK);
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
                 .setAppearanceLightStatusBars(false);
 
-        // Отступы под статус-бар и навигацию (на новых Android контент идёт под ними)
         View root = findViewById(R.id.root);
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
-            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(0, bars.top, 0, bars.bottom);
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
+                    | WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.ime());
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return insets;
         });
 
@@ -53,7 +51,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> goBack());
         btnForward.setOnClickListener(v -> goForward());
 
-        // Системная кнопка «назад» ведёт себя так же, как стрелка
         if (!isRoot()) {
             getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
                 @Override
@@ -91,7 +88,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    // Обычный переход вперёд по приложению сбрасывает «вперёд», как в браузере
     @Override
     public void startActivity(Intent intent) {
         NavHistory.clear();

@@ -1,3 +1,91 @@
 <resources>
     <string name="app_name">КВИ</string>
+    <string-array name="mortgage_city_options">
+        <item>Пенза</item>
+    </string-array>
+    <string-array name="mortgage_program_options">
+        <item>Квартира на вторичном рынке</item>
+        <item>Квартира в новостройке</item>
+        <item>Купить дом</item>
+        <item>Построить дом</item>
+        <item>Купить землю или дачный дом</item>
+        <item>Рефинансирование</item>
+        <item>Гараж, машино-место или кладовая</item>
+        <item>Наличные под залог жилья</item>
+        <item>Коммерческая недвижимость</item>
+        <item>Семейная ипотека</item>
+        <item>IT-ипотека</item>
+    </string-array>
+    <string-array name="vtb_mortgage_program_options">
+        <item>Вторичное жильё</item>
+        <item>Новостройка</item>
+        <item>Комбинированная ипотека — льготная + рыночная ставка</item>
+        <item>Семейная ипотека</item>
+        <item>Строительство дома</item>
+        <item>Земельный участок</item>
+        <item>Рефинансирование ипотеки на земельный участок</item>
+        <item>Готовый дом</item>
+        <item>IT-ипотека</item>
+        <item>Рефинансирование ипотеки</item>
+        <item>Военная ипотека</item>
+        <item>Покупка ипотечной квартиры</item>
+        <item>Рефинансирование военной ипотеки</item>
+        <item>Машино-место</item>
+        <item>Кладовая</item>
+        <item>Коммерческая недвижимость</item>
+    </string-array>
+    <string-array name="mortgage_personal_discount_options">
+        <item>Без персональной скидки</item>
+        <item>−0,5 п.п.</item>
+        <item>−1,0 п.п.</item>
+        <item>−1,5 п.п.</item>
+    </string-array>
+    <string-array name="mortgage_children_options">
+        <item>1 ребёнок</item>
+        <item>2 ребёнка</item>
+        <item>3 ребёнка</item>
+        <item>4 ребёнка</item>
+        <item>5 и более детей</item>
+    </string-array>
+    <string-array name="deposit_payout_options">
+        <item>В конце срока</item>
+        <item>Ежемесячно на счёт</item>
+        <item>Ежемесячно на вклад (с капитализацией)</item>
+    </string-array>
+    <string-array name="vtb_deposit_product_options">
+        <item>ВТБ-Вклад</item>
+        <item>Накопительный ВТБ-Счёт</item>
+    </string-array>
+    <string-array name="vtb_deposit_operation_options">
+        <item>Без пополнения и снятия</item>
+        <item>С пополнением</item>
+        <item>С пополнением и частичным снятием</item>
+    </string-array>
+    <string-array name="vtb_deposit_channel_options">
+        <item>Онлайн / банкомат</item>
+        <item>Отделение</item>
+    </string-array>
+    <string-array name="vtb_deposit_balance_options">
+        <item>Минимальный остаток</item>
+        <item>Ежедневный остаток</item>
+    </string-array>
+    <string-array name="vtb_deposit_package_options">
+        <item>Мультикарта — до 1 млн ₽</item>
+        <item>Привилегия — до 10 млн ₽</item>
+        <item>Private Banking — до 30 млн ₽</item>
+    </string-array>
+    <string-array name="vtb_deposit_spending_options">
+        <item>Покупки по картам: менее 20 000 ₽ (+0 п.п.)</item>
+        <item>Покупки от 20 000 ₽ (+1 п.п.)</item>
+        <item>Покупки от 50 000 ₽ (+4 п.п.)</item>
+    </string-array>
+    <string-array name="vtb_deposit_rasti_options">
+        <item>Нет уровня</item>
+        <item>Серебряный уровень (+0,25 п.п. по вкладу / +1 п.п. по счёту)</item>
+        <item>Золотой уровень (+0,5 п.п. по вкладу / +1,5 п.п. по счёту)</item>
+    </string-array>
+    <string-array name="tbank_mortgage_program_options">
+        <item>Вторичное жильё</item>
+        <item>Новостройки</item>
+    </string-array>
 </resources>

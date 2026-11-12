@@ -5,7 +5,7 @@ import android.graphics.Color;
 public class Bank {
     public final long id;
     public final String name;
-    public final String colorHex;   // "#21A038"
+    public final String colorHex;
     public final String website;
 
     public Bank(long id, String name, String colorHex, String website) {
