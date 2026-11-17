@@ -13,3 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Local Gradle cache and generated files
+.gradle-local/
+.kotlin/
+**/build/
+*.apk
+*.aab
+
